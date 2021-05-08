@@ -25,7 +25,21 @@ class User < ApplicationRecord
   def following?(user)
   following_user.include?(user)
   end
-
+  
+  def self.search(search,content) 
+      if search == "forward_match"
+        @user = User.where("name LIKE?","#{content}%")
+      elsif search == "backward_match"
+        @user = User.where("name LIKE?","%#{content}")
+      elsif search == "perfect_match"
+        @user = User.where(name: "#{content}")
+      elsif search == "partial_match"
+        @user = User.where("name LIKE?","%#{content}%")
+      else
+        @user = User.all
+      end
+  end
+ 
   attachment :profile_image, destroy: false
 
   validates :name, length: {maximum: 20, minimum: 2}, uniqueness: true
